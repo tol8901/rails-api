@@ -1,0 +1,3 @@
+default: --require features --format progress --tags 'not @wip'
+pretty:  --require features --format pretty   --tags 'not @wip'
+wip:     --require features --tags @wip
