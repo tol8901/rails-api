@@ -11,21 +11,23 @@ RSpec.describe ArticlesController do
     it 'returns a proper JSON' do
       article = create :article
       get '/articles'
-      body = JSON.parse(response.body).deep_symbolize_keys
-      # pp body - logging
-      expect(body).to eq(
-                        data: [
-                            {
-                            id: article.id.to_s,
-                            type: 'articles',
-                            attributes: {
-                              title: article.title,
-                              content: article.content,
-                              slug: article.slug
-                            }
-                          }
-                        ]
-                      )
+      # array containing only one element
+      expect(json_data.length).to eq(1)
+      # extract only one object with variable name expected
+      expected = json_data.first
+      # aggergate in one block to see all the messages that fail
+      aggregate_failures do
+        # compare if the returned type is as expected, and for an id
+        expect(expected[:id]).to eq(article.id.to_s)
+        expect(expected[:type]).to eq('article')
+        # check the attributes part
+        expect(expected[:attributes]).to eq(
+                                           title: article.title,
+                                           content: article.content,
+                                           slug: article.slug
+                                         )
+      end
+
     end
   end
 end
